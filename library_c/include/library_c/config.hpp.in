@@ -1,0 +1,3 @@
+#pragma once
+
+#cmakedefine LIBRARY_C_ENABLE_MODULE_SUPPORT
