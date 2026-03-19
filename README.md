@@ -26,6 +26,34 @@ The core technique lives in `library_c/include/library_c/library_c.hpp`. This si
 
 A generated `config.hpp` (via `configure_file`) communicates the `LIBRARY_C_ENABLE_MODULE_SUPPORT` flag to consumers.
 
+### Imports in the Global Module Fragment
+
+The compatibility header can trigger an `import` when `#include`d from within the global module fragment of a `.cppm` file (e.g., in `library_a.cppm`). At first glance this seems problematic — the standard prohibits directly writing `import` in the global module fragment. However, the interaction of several rules permits this indirectly.
+
+#### The Rules
+
+**`[cpp.pre] p5`** prohibits `pp-import` directives in the `pp-global-module-fragment` "at the start of phase 4 of translation." Phase 4 is where preprocessing occurs — `#include` directives are resolved, macros are expanded, and conditional compilation is evaluated. The "at the start of" qualifier means the check applies to the literal source text before any of this preprocessing takes place. A developer therefore cannot directly write `import` in the global module fragment.
+
+**`[cpp.include] p10`** permits an implementation to rewrite a `#include` directive naming an importable header into an equivalent `import` directive. This rewriting occurs during phase 4, not at its start.
+
+**`[cpp.import] p2`** makes the program ill-formed if a `pp-import` is produced by source file inclusion "while processing the group of a module-file." However, the grammar for `module-file` is:
+
+```
+module-file:
+    line-directives_opt  pp-global-module-fragment_opt  pp-module  group_opt
+    pp-private-module-fragment_opt
+```
+
+The `pp-global-module-fragment` contains its own distinct `group` non-terminal. "The group of a module-file" most naturally refers to the `group_opt` directly owned by the `module-file` production — the module body after the module declaration — not the `group` nested inside the `pp-global-module-fragment`.
+
+#### The Consequence
+
+Under this reading, none of the three rules prohibit the following scenario: a `#include` in the global module fragment names an importable header, and the implementation rewrites it to an `import` during phase 4. The `[cpp.pre] p5` check passes because no `pp-import` exists at the start of phase 4. The `[cpp.import] p2` prohibition does not apply because the global module fragment's `group` is not "the group of a module-file."
+
+#### Conclusion
+
+The standard does allow module imports in the global module fragment, but only indirectly — through a `#include` of an importable header that the implementation rewrites to an `import`. A directly-written `import` remains prohibited. However, the wording across these three sections is not coordinated in a way that makes this intent clear, and the precise scope of `[cpp.import] p2`'s "the group of a module-file" would benefit from clarification.
+
 ### Shared Implementation
 
 Because C++ requires `module;` to be the first token in a module implementation unit (no `#ifdef` allowed before it), library_c needs two source files for the two build modes. Both include a shared `library_c_impl.hpp` to avoid duplicating function bodies:
