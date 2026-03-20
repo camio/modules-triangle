@@ -26,7 +26,7 @@ if(${CMAKE_CXX_STANDARD} IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
 else()
     message(
         WARNING
-        "Boost.Any: `import std;` is not available for C++${CMAKE_CXX_STANDARD}"
+        "`import std;` is not available for C++${CMAKE_CXX_STANDARD}"
     )
     set(CMAKE_CXX_MODULE_STD)
 endif()

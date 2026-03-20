@@ -36,7 +36,7 @@ else ifeq (${hostSystemName},Linux)
   export CXX:=clang++-20
 endif
 
-.PHONY: all install tests distclean format demo
+.PHONY: all install tests check distclean format demo
 
 all: build/compile_commands.json
 	ln -sf $< .
@@ -46,8 +46,8 @@ build/compile_commands.json: CMakeLists.txt GNUmakefile
 	cmake -S . -B build -G Ninja \
  -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD="d0edc3af-4c50-42ea-a356-e2862fe7a444" \
  -D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON} \
- -D CMAKE_CXX_STANDARD=20 -D CMAKE_CXX_EXTENSIONS=YES -D CMAKE_CXX_STANDARD_REQUIRED=YES \
- -D CMAKE_CXX_MODULE_STD=NO \
+ -D CMAKE_CXX_STANDARD=23 -D CMAKE_CXX_EXTENSIONS=YES -D CMAKE_CXX_STANDARD_REQUIRED=YES \
+ -D CMAKE_CXX_MODULE_STD=YES \
  -D CMAKE_BUILD_TYPE=Release \
  -D LIBRARY_C_MODULES=NO \
  -D CMAKE_INSTALL_MESSAGE=LAZY \
@@ -71,10 +71,16 @@ demo: distclean
   -D CMAKE_CXX_COMPILER=${LLVM_DIR}/bin/clang++ \
   -D CMAKE_CXX_FLAGS="--sysroot=$$(xcrun --show-sdk-path)" \
   -D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON} \
-  -D CMAKE_CXX_STANDARD=23 -D CMAKE_CXX_EXTENSIONS=YES -D CMAKE_CXX_STANDARD_REQUIRED=YES \
+  -D CMAKE_CXX_STANDARD=20 -D CMAKE_CXX_EXTENSIONS=YES -D CMAKE_CXX_STANDARD_REQUIRED=YES \
   -D CMAKE_BUILD_TYPE=Release \
-  -D LIBRARY_C_MODULES=YES \
+  -D LIBRARY_C_MODULES=NO \
   --log-level=VERBOSE --fresh -Wdev
+	ln -sf build/compile_commands.json .
+	ninja -C build
+	ninja -C build test
+
+check: compile_commands.json
+	run-clang-tidy -checks='-*,misc-*' library_*
 
 tests: tests/CMakeLists.txt
 	cmake -S tests -B build/find-tests -G Ninja \
@@ -84,7 +90,10 @@ tests: tests/CMakeLists.txt
   -D CMAKE_CXX_MODULE_STD=YES \
   -D CMAKE_BUILD_TYPE=Release \
   --fresh # XXX --debug-find-pkg=modules_triangle
+	ln -sf build/find-tests/compile_commands.json .
 	ninja -C build/find-tests
+	ninja -C build/find-tests test
+	run-clang-tidy -checks='-*,misc-*' tests
 
 # Anything we don't know how to build will use this rule.
 % ::

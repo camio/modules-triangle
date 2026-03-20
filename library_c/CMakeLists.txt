@@ -24,9 +24,8 @@ if(LIBRARY_C_MODULES)
                 FILES
                     include/library_c/library_c.hpp
                     "${CMAKE_CURRENT_BINARY_DIR}/include/library_c/config.hpp"
-        PRIVATE src/library_c.cppm.cpp
+        PRIVATE src/library_c.cppm.cpp src/library_c_impl.hpp
     )
-    # XXX NO! target_include_directories(library_c PUBLIC include "${CMAKE_CURRENT_BINARY_DIR}/include")
     target_compile_features(library_c PUBLIC cxx_std_23)
     if(CMAKE_CXX_MODULE_STD)
         message(STATUS "Build abc with target PROPERTY CXX_MODULE_STD ON")
@@ -43,9 +42,8 @@ else()
                 FILES
                     include/library_c/library_c.hpp
                     "${CMAKE_CURRENT_BINARY_DIR}/include/library_c/config.hpp"
-        PRIVATE src/library_c.cpp
+        PRIVATE src/library_c.cpp src/library_c_impl.hpp
     )
-    # XXX NO!target_include_directories(library_c PUBLIC include "${CMAKE_CURRENT_BINARY_DIR}/include")
     target_compile_features(library_c PUBLIC cxx_std_23)
 endif()
 
