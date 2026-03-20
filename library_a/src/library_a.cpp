@@ -7,7 +7,5 @@ module;
 module library_a;
 
 namespace library_a {
-    std::string describe() {
-        return "library_a (using " + library_c::describe() + " and " + library_b::describe() + ")";
-    }
-}
+std::string describe() { return "library_a (using " + library_c::describe() + " and " + library_b::describe() + ")"; }
+} // namespace library_a

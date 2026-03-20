@@ -4,5 +4,5 @@
 #include <string>
 
 namespace library_b {
-    std::string describe();
+std::string describe();
 }

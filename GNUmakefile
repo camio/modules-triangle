@@ -65,6 +65,7 @@ distclean: # XXX clean
 
 format: # distclean
 	git ls-files ::*.cmake ::*CMakeLists.txt | xargs gersemi -i --no-warn-about-unknown-commands
+	git ls-files ::*.cpp ::*.cppm ::*.hpp | xargs clang-format -i
 
 demo: distclean
 	cmake -S . -B build -G Ninja \

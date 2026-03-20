@@ -3,7 +3,5 @@
 #include <string>
 
 namespace library_b {
-    std::string describe() {
-        return "library_b (using " + library_c::describe() + ")";
-    }
-}
+std::string describe() { return "library_b (using " + library_c::describe() + ")"; }
+} // namespace library_b
