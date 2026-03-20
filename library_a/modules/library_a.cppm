@@ -1,6 +1,11 @@
 module;
 
+#ifndef ABC_HAS_IMPORT_STD
 #include <string>
+#else
+import std;
+#endif
+
 #include <library_c/library_c.hpp>
 #include <library_b/library_b.hpp>
 
