@@ -5,7 +5,11 @@ project(tests LANGUAGES CXX)
 if(PROJECT_IS_TOP_LEVEL)
     find_package(modules_triangle 0.1.0 EXACT REQUIRED) # TODO(CK): COMPONENTS modules_triangle)
 
-    set(CMAKE_CXX_MODULE_STD 1)
+    if(${CMAKE_CXX_STANDARD} IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
+        set(CMAKE_CXX_MODULE_STD 1)
+        message(STATUS "Using `import std;`")
+    endif()
+
     enable_testing()
 endif()
 

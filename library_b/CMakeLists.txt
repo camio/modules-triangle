@@ -10,6 +10,5 @@ target_sources(
         FILE_SET HEADERS BASE_DIRS include FILES include/library_b/library_b.hpp
     PRIVATE src/library_b.cpp
 )
-# XXX NO! target_include_directories(library_b PUBLIC include)
 target_link_libraries(library_b PUBLIC library_c)
 target_compile_features(library_b PUBLIC cxx_std_23)

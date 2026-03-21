@@ -55,7 +55,7 @@ include(GNUInstallDirs)
 #   Defaults to ${CMAKE_INSTALL_LIBDIR}/cmake/${name}/modules.
 #
 # VERSION_SUFFIX (optional)
-#   option to eanable the versioning of install destinations
+#   option to enable the versioning of install destinations
 #
 # Brief
 # -----
