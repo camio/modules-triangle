@@ -49,14 +49,12 @@ all: build/compile_commands.json
 	ninja -C build
 
 build/compile_commands.json: CMakeLists.txt GNUmakefile
+	cmake --version
 	cmake -S . -B build -G Ninja \
-  -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD="d0edc3af-4c50-42ea-a356-e2862fe7a444" \
   -D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON} \
   -D CMAKE_CXX_STANDARD=20 -D CMAKE_CXX_EXTENSIONS=YES -D CMAKE_CXX_STANDARD_REQUIRED=YES \
   -D CMAKE_BUILD_TYPE=Release \
   -D LIBRARY_C_MODULES=YES \
-  -D CMAKE_INSTALL_MESSAGE=LAZY \
-  -D CMAKE_SKIP_INSTALL_RULES=NO \
   --log-level=VERBOSE --fresh \
   # --trace-expand --trace-source=use-fetch-content.cmake \
   # XXX --debug-find-pkg=GTest
@@ -73,6 +71,7 @@ format: # distclean
 	git ls-files ::*.cpp ::*.cppm ::*.hpp | xargs clang-format -i
 
 demo: distclean
+	cmake --version
 	cmake -S . -B build -G Ninja \
   -D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON} \
   -D CMAKE_CXX_STANDARD=20 -D CMAKE_CXX_EXTENSIONS=YES -D CMAKE_CXX_STANDARD_REQUIRED=YES \
@@ -88,8 +87,9 @@ check: compile_commands.json
 	run-clang-tidy -checks='-*,misc-*' library_*
 
 tests: tests/CMakeLists.txt
+	cmake --version
 	cmake -S tests -B build/find-tests -G Ninja \
-  -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD="d0edc3af-4c50-42ea-a356-e2862fe7a444" \
+  -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD="451f2fe2-a8a2-47c3-bc32-94786d8fc91b" \
   -D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON} \
   -D CMAKE_CXX_STANDARD=20 -D CMAKE_CXX_EXTENSIONS=YES -D CMAKE_CXX_STANDARD_REQUIRED=YES \
   -D CMAKE_BUILD_TYPE=Release \
