@@ -31,6 +31,17 @@ else()
     set(CMAKE_CXX_MODULE_STD)
 endif()
 
+# gersemi: off
+option(CMAKE_EXPORT_COMPILE_COMMANDS "Prepare run-clang-tidy" ${PROJECT_IS_TOP_LEVEL})
+if(CMAKE_EXPORT_COMPILE_COMMANDS AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    message(
+        STATUS
+        "CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES=${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES}"
+    )
+    set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
+endif()
+# gersemi: on
+
 add_subdirectory(library_c)
 add_subdirectory(library_b)
 add_subdirectory(library_a)

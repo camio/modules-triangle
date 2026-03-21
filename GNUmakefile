@@ -78,13 +78,20 @@ demo: distclean
   -D CMAKE_BUILD_TYPE=Release \
   -D LIBRARY_C_MODULES=NO \
   --log-level=VERBOSE --fresh -Wdev
-# -D CMAKE_CXX_COMPILER=${LLVM_DIR}/bin/clang++ \
 	ln -sf build/compile_commands.json .
 	ninja -C build
 	ninja -C build test
 
-check: compile_commands.json
-	run-clang-tidy -checks='-*,misc-*' library_*
+build/tmp/compile_commands.json: compile_commands.json
+	mkdir -p $(@D)
+	perl -p -e 's/-fmodules-ts\b//g;' \
+  -e 's/-fmodule-only\b//g;' \
+  -e 's/-fmodule-mapper=\S+//g;' \
+  -e 's/-fdeps-format=\S+//g;' \
+ $< > $@
+
+check: build/tmp/compile_commands.json
+	run-clang-tidy -checks='-*,misc-*' -p $(<D) library_*
 
 tests: tests/CMakeLists.txt
 	cmake --version
